@@ -1,7 +1,7 @@
 ## FUZZBOT
 
-Real-Time Word Hunt (iMessage game) that reads a board from a screenshot,
-and returns the longest words, using trie based DFS. Vengence against your
+Real-Time Word Hunt (Game Pidgeon) solver that the board from a screenshot,
+and returns the longest words, using trie based DFS. Vengeance against your
 word hunt tryhard friends!
 
 ## Planned Features

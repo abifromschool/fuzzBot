@@ -36,7 +36,7 @@ def load_dict(filepath):
     trie = Trie()
     with open(filepath) as f:
         for line in f:
-            word = line.strip()
+            word = line.strip().lower()
             if word:
                 trie.insert(word)
     return trie
@@ -81,5 +81,5 @@ def dfs(board, row, col, trie, path, visited, results):
     for (dr,dc) in [(-1,0),(-1,1),(0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1)]:
         dfs(board,row+dr,col+dc,new_node,new_path,visited,results)
 
-    #backtrack visited.
+    #backtrack visited
     visited.remove((row,col))

@@ -31,18 +31,37 @@ def main():
     board_contour = max(contours, key=cv.contourArea)
 
     x, y, w, h = cv.boundingRect(board_contour)
-    board = img[y:y+h, x:x+w]
+
+    #inner pixel offset for board
+    offset = 20
+    board = img[y+offset:y+h-offset, x+offset:x+w-offset]
+
+    #get cell size
+    cell_height = board.shape[0]
+    cell_width  = board.shape[1]
+
+    cell_height = cell_height // 4
+    cell_width = cell_width // 4
 
 
-    
+    #sclice board into cells
+    cells = []
+    for row in range(4):
+        for col in range (4):
+
+            cell = board[row * cell_height:(row + 1) * cell_height, col * cell_width: (col + 1) * cell_width]
+            cells.append(cell)
+
+            cell_path = f"data/tiles/cell_{row}_{col}.png"
+            cv.imwrite(cell_path, cell)
+
 
 
     #debug board images
-    cv.imshow("original", img)
-    cv.imshow("green mask", mask)
-    cv.imshow("board", board)
+    cv.imwrite("data/debug_board_tight.png", board)
     cv.waitKey(0)
     cv.destroyAllWindows()
+
 
 
 if __name__ == "__main__":

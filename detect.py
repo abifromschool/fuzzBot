@@ -52,6 +52,7 @@ def main():
 
             cell = board[row * cell_height:(row + 1) * cell_height, col * cell_width: (col + 1) * cell_width]
             cell = cv.resize(cell, (120,120))
+            cell = cv.cvtColor(cell, cv.COLOR_BGR2GRAY)
             cells.append(cell)
 
             cell_path = f"data/tiles/cell_{row}_{col}.png"
@@ -78,8 +79,10 @@ def match_letter(cell,templates):
     for (letter, template) in templates.items():
         res = cv.matchTemplate(cell, template, cv.TM_SQDIFF_NORMED)
         min_loc, _, _, _ = cv.minMaxLoc(res)
+        print(f"{letter}: {min_loc}")
         if (min_loc < curr_min):
-            best_letter = letter;
+            best_letter = letter
+            curr_min = min_loc
     
     return best_letter
 

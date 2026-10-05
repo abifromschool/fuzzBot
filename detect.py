@@ -1,10 +1,11 @@
+print("script started")
 import cv2 as cv
 import numpy as np
 import sys
 
 def main():
     #loads screenshot into project
-    img_path = "data/screenshots/screenshot1.png"
+    img_path = "data/screenshots/screenshot13.png"
 
     img = cv.imread(img_path)
 
@@ -50,6 +51,7 @@ def main():
         for col in range (4):
 
             cell = board[row * cell_height:(row + 1) * cell_height, col * cell_width: (col + 1) * cell_width]
+            cell = cv.resize(cell, (120,120))
             cells.append(cell)
 
             cell_path = f"data/tiles/cell_{row}_{col}.png"
@@ -59,6 +61,9 @@ def main():
 
     #debug board images
     cv.imwrite("data/debug_board_tight.png", board)
+    cv.imshow("board", board)
+    cv.imshow("img", img)
+    cv.imshow("crop", mask)
     cv.waitKey(0)
     cv.destroyAllWindows()
 

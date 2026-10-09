@@ -5,7 +5,7 @@ import sys
 
 def main():
     #loads screenshot into project
-    img_path = "data/screenshots/screenshot13.png"
+    img_path = "data/screenshots/screenshot10.png"
 
     img = cv.imread(img_path)
 
@@ -34,7 +34,7 @@ def main():
     x, y, w, h = cv.boundingRect(board_contour)
 
     #inner pixel offset for board
-    offset = 20
+    offset = 25
     board = img[y+offset:y+h-offset, x+offset:x+w-offset]
 
     #get cell size
@@ -61,12 +61,12 @@ def main():
 
 
     #debug board images
-    #cv.imwrite("data/debug_board_tight.png", board)
-    #cv.imshow("board", board)
+    cv.imwrite("data/debug_board_tight.png", board)
+    cv.imshow("board", board)
     #cv.imshow("img", img)
     #cv.imshow("crop", mask)
-    #cv.waitKey(0)
-    #cv.destroyAllWindows()
+    cv.waitKey(0)
+    cv.destroyAllWindows()
 
 def match_letter(cell,templates):
     """
@@ -85,6 +85,24 @@ def match_letter(cell,templates):
             curr_min = min_loc
     
     return best_letter
+
+def normalize(img):
+    _, bnw = cv.threshold(img, 50, 255, cv.THRESH_BINARY_INV)
+    bnw_contours, _ = cv.findContours(bnw, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+
+    if not bnw_contours:
+            print("no contours found brev")
+            sys.exit()
+
+    letter_contour = max(bnw_contours, key=cv.contourArea)
+    
+    x, y, w, h = cv.boundingRect(letter_contour)
+    cropped = img[y:y+h, x:x+w]
+    
+
+    normalized = cv.resize(cropped,(80,80))
+    return normalized
+
 
 if __name__ == "__main__":
     main()

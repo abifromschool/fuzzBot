@@ -1,24 +1,18 @@
+from detect import process_img
+from ocr_test import load_templates, ocr_board
 from solve import load_dict, boardsolver
 
-DPATH = "dict.txt"
-
 if __name__ == "__main__":
-    print("Loading dictionary...")
-    trie = load_dict(DPATH)
-    print(f"Dictionary loaded. Root children: {len(trie.children)}")
-    print(f"Test search for 'cat': {trie.search('cat')}")
-    print(f"Test search for 'car': {trie.search('car')}")
 
-    board = [
-        ['c', 'a', 't', 'x'],
-        ['o', 'r', 'e', 'y'],
-        ['d', 's', 'z', 'q'],
-        ['w', 'x', 'y', 'z'],
-    ]
+    screenshot_path = "data/screenshots/screenshot11.png"
+    dict_path = "dict.txt"
 
-    print("Solving board...")
-    results = boardsolver(board, trie)
-    print(f"Found {len(results)} words")
 
-    for word in sorted(results, key=len, reverse=True):
+    trie = load_dict(dict_path)
+    templates = load_templates()
+    cells = process_img(screenshot_path)
+    board = ocr_board(cells, templates)
+    words = boardsolver(board, trie)
+    
+    for word in sorted(words, key=len, reverse=True)[:20]:
         print(word)

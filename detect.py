@@ -1,11 +1,8 @@
-print("script started")
 import cv2 as cv
 import numpy as np
 import sys
 
-def main():
-    #loads screenshot into project
-    img_path = "data/screenshots/screenshot10.png"
+def process_img(img_path, debug=False):
 
     img = cv.imread(img_path)
 
@@ -46,29 +43,25 @@ def main():
 
 
     #sclice board into cells
-    cells = []
+    board = cv.cvtColor(board, cv.COLOR_BGR2GRAY)
+
+    cells = {}
     for row in range(4):
         for col in range (4):
 
             cell = board[row * cell_height:(row + 1) * cell_height, col * cell_width: (col + 1) * cell_width]
-            cell = cv.resize(cell, (120,120))
-            cell = cv.cvtColor(cell, cv.COLOR_BGR2GRAY)
-            cells.append(cell)
+
+            cell = normalize(cell)
+            cells[(row,col)] = cell
 
             cell_path = f"data/tiles/cell_{row}_{col}.png"
-            cv.imwrite(cell_path, cell)
 
+            if debug:
+                cv.imwrite(cell_path, cell)
 
+    return cells
 
-    #debug board images
-    cv.imwrite("data/debug_board_tight.png", board)
-    cv.imshow("board", board)
-    #cv.imshow("img", img)
-    #cv.imshow("crop", mask)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
-
-def match_letter(cell,templates):
+def match_letter(cell,templates, debug = False):
     """
     cell: image of a cell
     template: dict of {letter template_image}
@@ -78,11 +71,14 @@ def match_letter(cell,templates):
     best_letter = ''
     for (letter, template) in templates.items():
         res = cv.matchTemplate(cell, template, cv.TM_SQDIFF_NORMED)
-        min_loc, _, _, _ = cv.minMaxLoc(res)
-        print(f"{letter}: {min_loc}")
-        if (min_loc < curr_min):
+        min_val, _, _, _ = cv.minMaxLoc(res)
+
+        if debug:
+            print(f"{letter}: {min_val}")
+
+        if (min_val < curr_min):
             best_letter = letter
-            curr_min = min_loc
+            curr_min = min_val
     
     return best_letter
 
@@ -102,7 +98,3 @@ def normalize(img):
 
     normalized = cv.resize(cropped,(80,80))
     return normalized
-
-
-if __name__ == "__main__":
-    main()
